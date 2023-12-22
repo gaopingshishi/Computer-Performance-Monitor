@@ -1,0 +1,1 @@
+这是基于LibreHardwareMonitorLib制作的电脑性能监视器，主要是为了利用旧安卓手机
