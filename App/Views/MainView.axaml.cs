@@ -2,6 +2,7 @@
 using App.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Core.Commons;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,13 +33,19 @@ public partial class MainView : UserControl
         }
     }
 
-    private async void UserControl_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void UserControl_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (this.DataContext is MainViewModel vm)
         {
-            await Task.Factory.StartNew(vm.Start);
-            InitForm();
-            vm.SubscribeTopic();
+            Task.Factory.StartNew(vm.Start);
+            vm.ConnectedAction = () =>
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    InitForm();
+                });
+                vm.SubscribeTopic();
+            };
         }
     }
 

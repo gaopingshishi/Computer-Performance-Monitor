@@ -14,11 +14,12 @@ namespace App.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     const string aesKey = "gaotian123456789";
+
+    public Action? ConnectedAction;
     /// <summary>
     /// 界面上的监视管理器
     /// </summary>
     public readonly List<ISensorManage> ListSensorManage = new List<ISensorManage>();
-
     /// <summary>
     /// 当前设备有哪些硬件
     /// </summary>
@@ -99,6 +100,8 @@ public partial class MainViewModel : ViewModelBase
             mqttClient.ApplicationMessageReceivedAsync += MqttClient_ApplicationMessageReceivedAsync;
             mqttClient.ApplicationMessageReceivedAsync += MqttClient_ApplicationMessageReceivedBrokerAsync;
             CurrentWorkStatus = true;
+            ConnectedAction?.Invoke();
+            
         }
     }
 
