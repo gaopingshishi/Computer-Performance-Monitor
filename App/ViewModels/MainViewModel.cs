@@ -14,8 +14,8 @@ namespace App.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     const string aesKey = "gaotian123456789";
+    public Action<bool>? ConnectionChangeAction { get; set; }
 
-    public Action? ConnectedAction;
     /// <summary>
     /// 界面上的监视管理器
     /// </summary>
@@ -36,7 +36,10 @@ public partial class MainViewModel : ViewModelBase
     public bool CurrentWorkStatus
     {
         get { return currentWorkStatus; }
-        set { SetProperty(ref currentWorkStatus, value); }
+        set { 
+            SetProperty(ref currentWorkStatus, value);
+            ConnectionChangeAction?.Invoke(value);
+        }
     }
 
     public MainViewModel()
@@ -69,6 +72,7 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!CurrentWorkStatus)
         {
+            CurrentWorkStatus = false;
             while (!mqttClient.IsConnected)
             {
                 try
@@ -85,23 +89,18 @@ public partial class MainViewModel : ViewModelBase
                                  .Build();
                             mqttClient.ConnectAsync(mqttOptions).Wait();
                         }
-
                     }
-
                     Task.Delay(1000).Wait();
                 }
                 catch (Exception ex)
                 {
 
                 }
-
             }
             mqttClient.DisconnectedAsync += MqttClient_Disconnected;
             mqttClient.ApplicationMessageReceivedAsync += MqttClient_ApplicationMessageReceivedAsync;
             mqttClient.ApplicationMessageReceivedAsync += MqttClient_ApplicationMessageReceivedBrokerAsync;
             CurrentWorkStatus = true;
-            ConnectedAction?.Invoke();
-            
         }
     }
 

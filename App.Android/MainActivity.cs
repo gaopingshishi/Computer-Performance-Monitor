@@ -12,6 +12,7 @@ namespace App.Android;
     Icon = "@drawable/icon",
     StateNotNeeded = true,
     MainLauncher = true,
+    TurnScreenOn = true,
     ScreenOrientation = ScreenOrientation.Landscape,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity<App>

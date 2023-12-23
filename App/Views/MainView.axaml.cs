@@ -1,9 +1,12 @@
 ﻿using App.ViewManager;
 using App.ViewModels;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Core.Commons;
+using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +17,36 @@ public partial class MainView : UserControl
     public MainView()
     {
         InitializeComponent();
+
+        if (this.DataContext is MainViewModel vm)
+        {
+            Task.Factory.StartNew(vm.Start);
+            vm.ConnectionChangeAction = (state) =>
+            {
+                //连接成功
+                if (state)
+                {
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        InitForm();
+                    });
+                    vm.SubscribeTopic();
+                }
+                else//连接失败
+                {
+                    //显示连接失败提示，等待5秒后淡化
+                    Dispatcher.UIThread.InvokeAsync(async () =>
+                    {
+                        idlePanel.Opacity = 1;
+                        await Task.Delay(5000);
+                        if (!vm.CurrentWorkStatus)
+                        {
+                            idlePanel.Opacity = 0.1;
+                        }
+                    });
+                }
+            };
+        }
     }
 
     /// <summary>
@@ -30,22 +63,6 @@ public partial class MainView : UserControl
         {
             insetsManager.DisplayEdgeToEdge = true;
             insetsManager.IsSystemBarVisible = false;
-        }
-    }
-
-    private void UserControl_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (this.DataContext is MainViewModel vm)
-        {
-            Task.Factory.StartNew(vm.Start);
-            vm.ConnectedAction = () =>
-            {
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    InitForm();
-                });
-                vm.SubscribeTopic();
-            };
         }
     }
 
