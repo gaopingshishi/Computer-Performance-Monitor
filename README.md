@@ -1,8 +1,12 @@
 这是基于LibreHardwareMonitorLib制作的电脑性能监视器，主要是为了在安卓手机上显示电脑性能数据
 
+# 构建
+</br>
+1.安装.net 7，.net 4.8环境，安装Avalonia框架
+
 # 使用步骤
 </br>
-1.windwos电脑上需要安装.net4.8的环境，安卓app与windows需要在同一局域网下
+1.windwos电脑上需要安装.net 4.8的环境，安卓app与windows需要在同一局域网下
 </br>
 2.在发布里下载安卓app和windows压缩包这2个文件
 </br>
